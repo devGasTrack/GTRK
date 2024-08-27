@@ -1,0 +1,19 @@
+-muwx
+-i ../build/build_files/main.ihx
+-M
+-b HOME = 0x0000
+-b XSEG = 0x0001
+-b PSEG = 0x0001
+-b ISEG = 0x0000
+-b BSEG = 0x0000
+-k /usr/local/bin/../share/sdcc/lib/small
+-k /usr/local/Cellar/sdcc/4.4.0/share/sdcc/lib/small
+-l mcs51
+-l libsdcc
+-l libint
+-l liblong
+-l libfloat
+../build/build_files/main.rel
+../build/build_files/utils.rel
+
+-e
