@@ -1,0 +1,3 @@
+STEP1:  cd build
+STEP 2: chmod +x build.sh
+STEP 3: ./build
