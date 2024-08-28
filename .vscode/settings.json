@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "util.h": "c"
+        "util.h": "c",
+        "*.inc": "c",
+        "ch552.h": "c"
     }
 }
