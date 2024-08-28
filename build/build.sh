@@ -17,5 +17,5 @@ sdcc -mmcs51 "$BUILD_DIR/main.rel" "$BUILD_DIR/utils.rel" -o "$BUILD_DIR/main.ih
 
 # Convert to HEX file
 packihx "$BUILD_DIR/main.ihx" > "$BUILD_DIR/main.hex"
+srec_cat "$BUILD_DIR/main.hex" -Intel -o "output.bin" -Binary
 
-echo "Build completed successfully!"
