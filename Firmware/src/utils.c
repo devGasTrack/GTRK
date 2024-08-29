@@ -42,7 +42,7 @@ void set_port_dir(enum PORT port, UINT8 dir){
 
     }
     else if(port == PORT3){
-        P1_DIR_PU = dir;
+        P3_DIR_PU = dir;
     }
 }
 
@@ -105,3 +105,57 @@ void configure_port(enum PORT port, enum PORT_MODE mode){
     
 }
 
+void set_bit(volatile UINT8 * reg, UINT8 _bit){
+    *reg |= 1 << _bit;
+}
+
+void clear_bit(volatile UINT8 * reg, UINT8 _bit){
+    UINT8 _data = ~ (1 << _bit);
+    *reg &= _data;
+}
+
+ UINT8 read_bit(volatile UINT8 * reg, UINT8 _bit){
+    UINT8 _data = *reg >> _bit;
+    return _data & 0x01;
+}
+
+void ADC_Enable(UINT8 state){
+    if(state == 0)
+        clear_bit(&ADC_CFG,3);
+    else 
+        set_bit(&ADC_CFG, 3);
+}
+
+void set_ADC_speed(UINT8 speed){
+    if(speed == 0)
+        clear_bit(&ADC_CFG,0);
+    else 
+        set_bit(&ADC_CFG, 0);
+}
+
+void set_ADC_channel(UINT8 channel){
+    switch(channel){
+        case 0: clear_bit(&ADC_CTRL,0);
+                clear_bit(&ADC_CTRL,1);
+                break;
+        case 1: set_bit(&ADC_CTRL,0);
+                clear_bit(&ADC_CTRL,1);
+                break;
+        case 2: clear_bit(&ADC_CTRL,0);
+                set_bit(&ADC_CTRL,1);
+                break;
+        case 3: set_bit(&ADC_CTRL,0);
+                set_bit(&ADC_CTRL,1);
+                break;
+    }
+}
+
+UINT8 analog_read(int channel){
+    ADC_Enable(1);
+    set_ADC_speed(1);
+    set_ADC_channel((UINT8)channel);
+    set_bit(&ADC_CTRL,4);
+    while(read_bit(ADC_CTRL,4) == 1){}
+    ADC_Enable(0);
+    return ADC_DATA;
+}

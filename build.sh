@@ -6,6 +6,7 @@ INC_DIR="../include"
 BUILD_DIR="../build/build_files"
 
 # Create build directory if it doesn't exist
+cd build
 mkdir -p "$BUILD_DIR"
 
 # Compile source files into object files

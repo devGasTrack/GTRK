@@ -11,5 +11,12 @@
     UINT8 read_port_value (enum PORT port);
     void configure_port(enum PORT port, enum PORT_MODE mode);
     void delay(unsigned int ms);
+    void set_bit(volatile UINT8 * reg, UINT8 _bit);
+    void clear_bit(volatile UINT8 * reg, UINT8 _bit);
+    UINT8 read_bit(volatile UINT8 * reg, UINT8 _bit);
+    void ADC_Enable(UINT8 state);
+    void set_ADC_speed(UINT8 speed);
+    void set_ADC_channel(UINT8 channel);
+    UINT8 analog_read(int channel);
 
 #endif
