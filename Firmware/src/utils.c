@@ -3,7 +3,7 @@
 void delay(unsigned int ms) {
     unsigned int i, j;
     for (i = 0; i < ms; i++) {
-        for (j = 0; j < 123; j++) {
+        for (j = 0; j < 456; j++) {
         }
     }
 }
@@ -158,4 +158,25 @@ UINT8 analog_read(int channel){
     while(read_bit(ADC_CTRL,4) == 1){}
     ADC_Enable(0);
     return ADC_DATA;
+}
+
+void bit_bang_uart_begin(void){
+    configure_port(PORT3, PP_OUT);
+    set_port_value(PORT3, 0xFF);
+    delay(500);
+}
+
+void bit_bang_uart_tx(UINT8 data){
+    set_port_value(PORT3, 0x00);
+    delay(104);
+    for (int i = 0; i < 8; i++) {
+        if (data & (1 << i)) {
+            set_port_value(PORT3, 0xFF);
+        } else {
+            set_port_value(PORT3, 0x00);
+        }
+        delay(104);
+    }
+    set_port_value(PORT3, 0xFF); 
+    delay(104);
 }

@@ -18,5 +18,7 @@
     void set_ADC_speed(UINT8 speed);
     void set_ADC_channel(UINT8 channel);
     UINT8 analog_read(int channel);
+    void bit_bang_uart_begin(void);
+    void bit_bang_uart_tx(UINT8 data);
 
 #endif
