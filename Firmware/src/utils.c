@@ -1,5 +1,4 @@
 #include "../include/utils.h"
-
 void delay(unsigned int ms) {
     unsigned int i, j;
     for (i = 0; i < ms; i++) {
@@ -105,57 +104,46 @@ void configure_port(enum PORT port, enum PORT_MODE mode){
     
 }
 
-void set_bit(volatile UINT8 * reg, UINT8 _bit){
-    *reg |= 1 << _bit;
+void start_adc(void){
+    ADC_CTRL |= 1 << 4;
 }
 
-void clear_bit(volatile UINT8 * reg, UINT8 _bit){
-    UINT8 _data = ~ (1 << _bit);
-    *reg &= _data;
+UINT8 is_adc_done(void){
+    UINT8 data = ADC_CTRL >> 4;
+    data &= 0x01;
+    return data;
 }
 
- UINT8 read_bit(volatile UINT8 * reg, UINT8 _bit){
-    UINT8 _data = *reg >> _bit;
-    return _data & 0x01;
-}
 
 void ADC_Enable(UINT8 state){
-    if(state == 0)
-        clear_bit(&ADC_CFG,3);
-    else 
-        set_bit(&ADC_CFG, 3);
+    if(state > 0)
+        ADC_CFG |= 1 << 3;
+    else{ 
+        UINT8 _data = ~ (1 << 3);
+        ADC_CFG &= _data;
+    }
 }
 
 void set_ADC_speed(UINT8 speed){
-    if(speed == 0)
-        clear_bit(&ADC_CFG,0);
-    else 
-        set_bit(&ADC_CFG, 0);
+    if(speed > 0)
+        ADC_CFG |= 1;
+    else {
+        UINT8 _data = ~ 1;
+        ADC_CFG &= _data;
+    }
 }
 
 void set_ADC_channel(UINT8 channel){
-    switch(channel){
-        case 0: clear_bit(&ADC_CTRL,0);
-                clear_bit(&ADC_CTRL,1);
-                break;
-        case 1: set_bit(&ADC_CTRL,0);
-                clear_bit(&ADC_CTRL,1);
-                break;
-        case 2: clear_bit(&ADC_CTRL,0);
-                set_bit(&ADC_CTRL,1);
-                break;
-        case 3: set_bit(&ADC_CTRL,0);
-                set_bit(&ADC_CTRL,1);
-                break;
-    }
+    ADC_CTRL &= 0xFC;
+    ADC_CTRL |= channel & 0x03;
 }
 
 UINT8 analog_read(int channel){
     ADC_Enable(1);
     set_ADC_speed(1);
     set_ADC_channel((UINT8)channel);
-    set_bit(&ADC_CTRL,4);
-    while(read_bit(ADC_CTRL,4) == 1){}
+    start_adc();
+    while(is_adc_done() == 1){}
     ADC_Enable(0);
     return ADC_DATA;
 }
@@ -168,15 +156,32 @@ void bit_bang_uart_begin(void){
 
 void bit_bang_uart_tx(UINT8 data){
     set_port_value(PORT3, 0x00);
-    delay(104);
+    delay(1);
     for (int i = 0; i < 8; i++) {
         if (data & (1 << i)) {
             set_port_value(PORT3, 0xFF);
         } else {
             set_port_value(PORT3, 0x00);
         }
-        delay(104);
+        delay(1);
     }
     set_port_value(PORT3, 0xFF); 
-    delay(104);
+    delay(1);
+}
+
+void print(char * str){
+    int index = 0;
+    while(str[index] != '\0'){
+        bit_bang_uart_tx(str[index++]);
+    }
+}
+
+void println(char * str){
+    print(str);
+    bit_bang_uart_tx('\r');
+    bit_bang_uart_tx('\n');
+}
+
+UINT8 get_system_freq(void){
+    return CLOCK_CFG & 0x07;
 }
