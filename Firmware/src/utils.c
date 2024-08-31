@@ -185,3 +185,93 @@ void println(char * str){
 UINT8 get_system_freq(void){
     return CLOCK_CFG & 0x07;
 }
+void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode){
+    if(_t == TIMER0){
+        TMOD &= 0xFC;
+        switch (_mode){
+            case TMR_MODE_0:    break;
+            case TMR_MODE_1:    TMOD |= 0x01;
+                                break;
+            case TMR_MODE_2:    TMOD |= 0x02;
+                                break;
+            case TMR_MODE_3:    TMOD |= 0x03;
+                                break;
+        }
+    }
+    else if(_t == TIMER1){
+        TMOD &= 0xCF;
+        switch (_mode){
+            case TMR_MODE_0:    break;
+            case TMR_MODE_1:    TMOD |= 0x10;
+                                break;
+            case TMR_MODE_2:    TMOD |= 0x20;
+                                break;
+            case TMR_MODE_3:    TMOD |= 0x30;
+                                break;
+        }
+    }
+    else if(_t == TIMER2){
+        T2CON &= 0xCD;
+        switch (_mode){
+            case TMR_MODE_0: break;
+
+        }
+    }
+
+}
+
+void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk){
+    if(_t == TIMER0){
+        T2MOD &= 0x6F;
+        if(_clk == DIV_12) {}
+        if(_clk == DIV_4) T2MOD |= 0x10;
+        if (_clk == F_SYS) T2MOD |= 0x90;
+    }
+    else if(_t == TIMER1){
+        T2MOD &= 0x5F;
+        if(_clk == DIV_12) {}
+        if(_clk == DIV_4) T2MOD |= 0x20;
+        if(_clk == F_SYS) T2MOD |= 0xA0;
+    }
+    else if(_t == TIMER2){
+        T2MOD &= 0x3F;
+        if(_clk == DIV_12) T2MOD |= 0x10;
+        if(_clk == DIV_4 || _clk == DIV_2) T2MOD |= 0x40;
+        if(_clk == F_SYS) T2MOD |= 0xC0;
+    }
+
+}
+
+void select_tmr_clk_src(enum TIMER _t, UINT8 source){
+    if(_t == TIMER0 && source == 0){
+        TMOD &= 0xFB;
+    }
+    else if(_t == TIMER0 && source == 1){
+        TMOD |= 0x04;
+    }
+    else if(_t == TIMER1 && source == 0){
+        TMOD &= 0xBF;
+    }
+    else if(_t == TIMER1 && source == 1){
+        TMOD |= 0x40;
+    }
+
+}
+
+void update_timer_reg(enum TIMER _t, UINT16 value){
+    switch(_t){
+        case TIMER0:    TL0 = (UINT8)value;
+                        TH0 = (UINT8)(value >> 8);
+                        break;
+        case TIMER1:    TL1 = (UINT8)value;
+                        TH1 = (UINT8)(value >> 8);
+                        break;
+        case TIMER2:    TL2 = (UINT8)value;
+                        TH2 = (UINT8)(value >> 8);
+                        break;
+    }
+}
+
+void init_timer(enum TIMER _t){
+
+}
