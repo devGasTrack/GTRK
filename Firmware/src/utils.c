@@ -154,6 +154,8 @@ void bit_bang_uart_begin(void){
     delay(500);
 }
 
+/// @brief Bit Bang Uart transmit function to tranfer one byte only
+/// @param data Character to transmit
 void bit_bang_uart_tx(UINT8 data){
     set_port_value(PORT3, 0x00);
     delay(1);
@@ -169,6 +171,8 @@ void bit_bang_uart_tx(UINT8 data){
     delay(1);
 }
 
+/// @brief Print a string using bit banged uart
+/// @param str character array to print
 void print(char * str){
     int index = 0;
     while(str[index] != '\0'){
@@ -176,12 +180,17 @@ void print(char * str){
     }
 }
 
+/// @brief Print a string using bit banged uart and add carriage return and new line to it
+/// @param str character array to print
 void println(char * str){
     print(str);
     bit_bang_uart_tx('\r');
     bit_bang_uart_tx('\n');
 }
 
+/// @brief Get Current System Frequency
+/// @param 
+/// @return Returns Frequency
 UINT8 get_system_freq(void){
     return CLOCK_CFG & 0x07;
 }
@@ -288,16 +297,26 @@ void update_timer_reg(enum TIMER _t, UINT16 value){
 /// @param  _t Selected Timer
 /// @param enable_bit 0 to disable, 1 to enable
 void timer_interrupt(enum TIMER _t, UINT8 enable_bit){
+    
     if(_t == TIMER0){
-        if(enable_bit > 0) IE |= 0x02 ;
+        if(enable_bit > 0) {
+            IE |= 0x80;
+            IE |= 0x02;
+        }
         else IE &= 0xFD;
     }
     else if(_t == TIMER1){
-        if(enable_bit > 0) IE |= 0x08; 
+        if(enable_bit > 0) {
+            IE |= 0x80;
+            IE |= 0x08; 
+        }
         else IE &= 0xF7;
     }
     else if(_t == TIMER2){
-        if(enable_bit > 0) IE |= 0x20;
+        if(enable_bit > 0) {
+            IE |= 0x80;
+            IE |= 0x20;
+        }
         else IE &= 0xDF;
     }
 }
@@ -313,6 +332,20 @@ void start_timer(enum TIMER _t){
     }
     if(_t == TIMER2){
         T2CON |=0x04;
+    }
+}
+
+/// @brief Stop selected timer
+/// @param _t Timer to stop
+void stop_timer(enum TIMER _t){
+    if(_t == TIMER0){
+        TCON &=0xEF;
+    }
+    else if(_t == TIMER1){
+        TCON &=0xBF;
+    }
+    if(_t == TIMER2){
+        T2CON &=0xFB;
     }
 }
 // void init_timer(enum TIMER _t){

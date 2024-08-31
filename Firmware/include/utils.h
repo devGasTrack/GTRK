@@ -31,6 +31,7 @@
     UINT8 get_system_freq(void);
     void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode);
     void start_timer(enum TIMER _t);
+    void stop_timer(enum TIMER _t);
     void timer_interrupt(enum TIMER _t, UINT8 enable_bit);
     void update_timer_reg(enum TIMER _t, UINT16 value);
     void select_tmr_clk_src(enum TIMER _t, UINT8 source);
