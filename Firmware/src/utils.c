@@ -185,6 +185,10 @@ void println(char * str){
 UINT8 get_system_freq(void){
     return CLOCK_CFG & 0x07;
 }
+
+/// @brief This function sets the timer mode
+/// @param  _t sets the timer to be configured
+/// @param  _mode sets the mode to be in. This unique to TIMER0 and TIMER1. There is TMR_MODE_0, TMR_MODE_1, TMR_MODE_2 and TMR_MODE_3
 void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode){
     if(_t == TIMER0){
         TMOD &= 0xFC;
@@ -219,7 +223,9 @@ void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode){
     }
 
 }
-
+/// @brief Used to set the clock division for the timer
+/// @param _t is the selected timer
+/// @param _clk is the division selected (DIV_12, DIV_4, DIV_2, F_SYS)
 void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk){
     if(_t == TIMER0){
         T2MOD &= 0x6F;
@@ -242,6 +248,9 @@ void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk){
 
 }
 
+/// @brief This is used to configure the clock source to be internal or external
+/// @param  _t is the selected timer
+/// @param source (0 for internal, 1 for external)
 void select_tmr_clk_src(enum TIMER _t, UINT8 source){
     if(_t == TIMER0 && source == 0){
         TMOD &= 0xFB;
@@ -258,6 +267,9 @@ void select_tmr_clk_src(enum TIMER _t, UINT8 source){
 
 }
 
+/// @brief This is used to set the TL and TH of the timer selected
+/// @param  _t Selected Time
+/// @param value UINT16 value to written into the registers
 void update_timer_reg(enum TIMER _t, UINT16 value){
     switch(_t){
         case TIMER0:    TL0 = (UINT8)value;
@@ -272,6 +284,37 @@ void update_timer_reg(enum TIMER _t, UINT16 value){
     }
 }
 
-void init_timer(enum TIMER _t){
-
+/// @brief Enable or disable interrupt for the selected timer
+/// @param  _t Selected Timer
+/// @param enable_bit 0 to disable, 1 to enable
+void timer_interrupt(enum TIMER _t, UINT8 enable_bit){
+    if(_t == TIMER0){
+        if(enable_bit > 0) IE |= 0x02 ;
+        else IE &= 0xFD;
+    }
+    else if(_t == TIMER1){
+        if(enable_bit > 0) IE |= 0x08; 
+        else IE &= 0xF7;
+    }
+    else if(_t == TIMER2){
+        if(enable_bit > 0) IE |= 0x20;
+        else IE &= 0xDF;
+    }
 }
+
+/// @brief Start selected timer
+/// @param _t Selected timer
+void start_timer(enum TIMER _t){
+    if(_t == TIMER0){
+        TCON |=0x10;
+    }
+    else if(_t == TIMER1){
+        TCON |=0x40;
+    }
+    if(_t == TIMER2){
+        T2CON |=0x04;
+    }
+}
+// void init_timer(enum TIMER _t){
+
+// }

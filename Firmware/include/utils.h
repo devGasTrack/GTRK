@@ -30,5 +30,11 @@
     void println(char * str);
     UINT8 get_system_freq(void);
     void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode);
+    void start_timer(enum TIMER _t);
+    void timer_interrupt(enum TIMER _t, UINT8 enable_bit);
+    void update_timer_reg(enum TIMER _t, UINT16 value);
+    void select_tmr_clk_src(enum TIMER _t, UINT8 source);
+    void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk);
+    void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode);
     void init_timer(enum TIMER _t);
 #endif
