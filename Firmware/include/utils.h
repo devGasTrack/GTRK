@@ -4,9 +4,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+    UINT8 uart_counter;
+    __xdata unsigned char uart_buf[256];
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};
     enum TIMER{TIMER0, TIMER1, TIMER2};
+    enum UART_TYPE{UART0, UART1};
     enum TIMER_MODE {TMR_MODE_0,TMR_MODE_1,TMR_MODE_2, TMR_MODE_3};
     enum TIMER_CLK {DIV_12, DIV_4, DIV_2, F_SYS};
     void set_output_mode(enum PORT port, UINT8 value);
@@ -38,4 +41,8 @@
     void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk);
     void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode);
     void init_timer(enum TIMER _t);
+    void uart_begin(enum UART_TYPE type);
+    void uart_buffer_flush(void);
+    UINT8 uart_read(char * buf);
+    
 #endif

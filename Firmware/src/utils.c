@@ -157,6 +157,7 @@ void bit_bang_uart_begin(void){
 /// @brief Bit Bang Uart transmit function to tranfer one byte only
 /// @param data Character to transmit
 void bit_bang_uart_tx(UINT8 data){
+    PIN_FUNC = 0;
     set_port_value(PORT3, 0x00);
     delay(1);
     for (int i = 0; i < 8; i++) {
@@ -351,3 +352,77 @@ void stop_timer(enum TIMER _t){
 // void init_timer(enum TIMER _t){
 
 // }
+
+/// @brief Function to initialise UART
+/// @param type The UART to be initialised. UART0 or UART1
+void uart_begin(enum UART_TYPE type){
+    uart_buffer_flush();
+    if(type == UART0){
+        T2CON &= 0xCF;
+        T2MOD |= 0xA0;
+        PCON &= 0x7F;
+        TH1 = 236; 
+        set_timer_mode(TIMER1,TMR_MODE_2);
+        TMOD &= 0xB7;
+        start_timer(TIMER1);
+        SCON |= 0x70;
+        IE &= 0xBF;
+        IE |= 0x90;
+    }
+    else{
+        // to be implemented later.
+    }
+    
+}
+
+/// @brief Clear uart buf
+/// @param 
+void uart_buffer_flush(void){
+    uart_counter = 0;
+    IE &= 0x7F;
+    for(UINT8 i = 0; i <= 255; i++){
+        uart_buf[i] = '\0';
+    }
+    IE |= 0x80;
+}
+/// @brief Read the buffer containing data recieved through UART
+/// @param buf buffer to read the data to. Must not be null
+/// @return number of data read
+UINT8 uart_read(char * buf){
+    UINT8 count = 0;
+    uart_counter = 0;
+    for(UINT8 i = 0; i <= 255; i++){
+        if(uart_buf[i] == '\0') break;
+        buf[i] = uart_buf[i];
+        count = i + 1;
+    }
+    uart_buffer_flush();
+    return count;
+}
+
+/// @brief Write a byte using uart0
+/// @param data to be written
+void uart0_write(UINT8 data){
+    SBUF = data;
+    while (((SCON >> 1) & 0x01) == 0) {
+        //wait till the transmission is done
+    }
+    SCON &= ~0x02; 
+}
+
+/// @brief Write string to uart0
+/// @param data String to write
+void uart0_print(char * data){
+    int index = 0;
+    while(data[index] != '\0'){
+        uart0_write(data[index++]);
+    }
+}
+
+/// @brief Write string via uart and add carriage return and new line at the end
+/// @param data String to be written.
+void uart0_println(char * data){
+    print(data);
+    bit_bang_uart_tx('\r');
+    bit_bang_uart_tx('\n');
+}

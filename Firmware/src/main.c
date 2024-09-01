@@ -3,20 +3,21 @@
 #include <8051.h>
 #include <stdio.h>
 
-void timer0_isr(void) __interrupt(INT_NO_TMR1){
+void timer0_isr(void) __interrupt(INT_NO_TMR0){
     P3 = ~P3;
     update_timer_reg(TIMER1, 0xFFFE);
 }
 
+void uart0_isr(void) __interrupt(INT_NO_UART0){
+    if(uart_counter <= 255)
+        uart_buf[uart_counter++] = SBUF;
+        
+    SCON &= ~0x02;
+}
+
 void main(void) {
     bit_bang_uart_begin();
-    select_tmr_clk_src(TIMER1, 0);
-    select_timer_clk(TIMER1, DIV_12);
-    set_timer_mode(TIMER1,TMR_MODE_1);
-    update_timer_reg(TIMER1, 0xFFFE);
-    timer_interrupt(TIMER1,1);
-    start_timer(TIMER1);
-
+    uart_begin(UART0);
     while(1){
         
 

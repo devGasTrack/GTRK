@@ -2,6 +2,7 @@
     "files.associations": {
         "util.h": "c",
         "*.inc": "c",
-        "ch552.h": "c"
+        "ch552.h": "c",
+        "sstream": "c"
     }
 }
