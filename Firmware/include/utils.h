@@ -44,5 +44,8 @@
     void uart_begin(enum UART_TYPE type);
     void uart_buffer_flush(void);
     UINT8 uart_read(char * buf);
+    void uart0_print(char * data);
+    void uart0_println(char * data);
+    void uart0_write(UINT8 data);
     
 #endif

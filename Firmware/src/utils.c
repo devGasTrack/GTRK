@@ -1,4 +1,5 @@
 #include "../include/utils.h"
+
 void delay(unsigned int ms) {
     unsigned int i, j;
     for (i = 0; i < ms; i++) {
@@ -356,16 +357,17 @@ void stop_timer(enum TIMER _t){
 /// @brief Function to initialise UART
 /// @param type The UART to be initialised. UART0 or UART1
 void uart_begin(enum UART_TYPE type){
-    uart_buffer_flush();
+    //uart_buffer_flush();
     if(type == UART0){
         T2CON &= 0xCF;
         T2MOD |= 0xA0;
-        PCON &= 0x7F;
+        PCON |= 0x80;
         TH1 = 236; 
+        timer_interrupt(TIMER1,1);
         set_timer_mode(TIMER1,TMR_MODE_2);
         TMOD &= 0xB7;
         start_timer(TIMER1);
-        SCON |= 0x70;
+        SCON |= 0x50;
         IE &= 0xBF;
         IE |= 0x90;
     }
@@ -407,7 +409,7 @@ void uart0_write(UINT8 data){
     while (((SCON >> 1) & 0x01) == 0) {
         //wait till the transmission is done
     }
-    SCON &= ~0x02; 
+    SCON &= 0xFD; 
 }
 
 /// @brief Write string to uart0
@@ -422,7 +424,7 @@ void uart0_print(char * data){
 /// @brief Write string via uart and add carriage return and new line at the end
 /// @param data String to be written.
 void uart0_println(char * data){
-    print(data);
-    bit_bang_uart_tx('\r');
-    bit_bang_uart_tx('\n');
+    uart0_print(data);
+    uart0_print('\r');
+    uart0_print('\n');
 }
