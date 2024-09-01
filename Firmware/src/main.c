@@ -17,11 +17,20 @@ void uart0_isr(void) __interrupt(INT_NO_UART0){
 }
 
 void main(void) {
-    //bit_bang_uart_begin();
-    uart_begin(UART0);
+    uart_begin(UART0,9600);
     while(1){
         char data[50] = {0};
-        uart0_println("abcdefghijklmnopqrstuvwxyz");
+        uart0_println("GAS TRACK v1.0.0");
+        uart0_println("Hardware Developed by ");
+        uart0_println("Fayele Moses Olukoya \t Circuit Design");
+        uart0_println("Fayele Moses Olukoya \t PCB Design");
+        uart0_println("JLCPCB \t PCB Manufacture");
+        uart0_println("Fayele Joshua Oluwatunmise \t Enclosure Design");
+        uart0_println("DIMENSION FORGE \t Enclosure Manufacture");
+        uart0_println("Fayele Moses Olukoya \t Firmware Developer");
+
+        delay(500);
+
 
     }
 }

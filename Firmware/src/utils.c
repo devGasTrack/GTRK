@@ -8,6 +8,9 @@ void delay(unsigned int ms) {
     }
 }
 
+/// @brief Set the output mode of the port
+/// @param port Selected port to set {PORT1, PORT2, PORT3}
+/// @param value the 8 bit output mode of the port
 void set_output_mode(enum PORT port, UINT8 value){
     if(port == PORT1){
         P1_MOD_OC = value;
@@ -20,6 +23,9 @@ void set_output_mode(enum PORT port, UINT8 value){
     }
 }
 
+/// @brief Read the output mode of the port
+/// @param port Selected port to read {PORT1, PORT2, PORT3}
+/// @return the 8 bit output mode of the port
 UINT8 read_output_mode (enum PORT port){
     UINT8 ret = 0;
     if(port == PORT1){
@@ -34,6 +40,9 @@ UINT8 read_output_mode (enum PORT port){
     return ret;
 }
 
+/// @brief Set the current direction of the selected port
+/// @param port Selected port to set {PORT1, PORT2, PORT3}
+/// @param dir the 8 bit direction of the port
 void set_port_dir(enum PORT port, UINT8 dir){
     if(port == PORT1){
         P1_DIR_PU = dir;
@@ -45,7 +54,9 @@ void set_port_dir(enum PORT port, UINT8 dir){
         P3_DIR_PU = dir;
     }
 }
-
+/// @brief Read the current direction of the selected port
+/// @param port Selected port to read from {PORT1, PORT2, PORT3}
+/// @return the 8 bit direction of the port
 UINT8 read_port_dir (enum PORT port){
     UINT8 ret = 0;
     if(port == PORT1){
@@ -60,6 +71,9 @@ UINT8 read_port_dir (enum PORT port){
     return ret;
 }
 
+/// @brief Set the value of the selected port
+/// @param port Selected port{PORT1, PORT2, PORT3}
+/// @param value 8 bit value to set the port to
 void set_port_value(enum PORT port, UINT8 value){
     if(port == PORT1){
         P1 = value;
@@ -71,6 +85,10 @@ void set_port_value(enum PORT port, UINT8 value){
         P3 = value;
     }
 }
+
+/// @brief Read the port value
+/// @param port The port to read from {PORT1, PORT2, PORT3}
+/// @return 8 bit value of the port
 UINT8 read_port_value (enum PORT port){
     UINT8 ret = 0;
     if(port == PORT1){
@@ -84,7 +102,9 @@ UINT8 read_port_value (enum PORT port){
     }
     return ret;
 }
-
+/// @brief Configure port to a particular mode
+/// @param port Selected port {PORT1, PORT2, PORT3}
+/// @param mode Mode to set the port to {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI}
 void configure_port(enum PORT port, enum PORT_MODE mode){
     if(mode == HIGH_IMPEDANCE){
         set_output_mode(port,0x00);
@@ -104,18 +124,22 @@ void configure_port(enum PORT port, enum PORT_MODE mode){
     }
     
 }
-
+/// @brief Start ADC conversion
+/// @param  
 void start_adc(void){
     ADC_CTRL |= 1 << 4;
 }
-
+/// @brief Check if ADC conversion is done. (This does not need Interrupt)
+/// @param  
+/// @return 1 for done, 0 if not done
 UINT8 is_adc_done(void){
     UINT8 data = ADC_CTRL >> 4;
     data &= 0x01;
     return data;
 }
 
-
+/// @brief Switch ON ADC Module in the MC
+/// @param state 1 is ON and 0 is OFF
 void ADC_Enable(UINT8 state){
     if(state > 0)
         ADC_CFG |= 1 << 3;
@@ -124,7 +148,8 @@ void ADC_Enable(UINT8 state){
         ADC_CFG &= _data;
     }
 }
-
+/// @brief Set ADC conversion speed(Slow or fast). Check datasheet for more details
+/// @param speed 0 for slow, 1 for fast
 void set_ADC_speed(UINT8 speed){
     if(speed > 0)
         ADC_CFG |= 1;
@@ -133,12 +158,15 @@ void set_ADC_speed(UINT8 speed){
         ADC_CFG &= _data;
     }
 }
-
+/// @brief Set ADC Channel to read from
+/// @param channel Channel to configure adc input from
 void set_ADC_channel(UINT8 channel){
     ADC_CTRL &= 0xFC;
     ADC_CTRL |= channel & 0x03;
 }
-
+/// @brief Read ADC from any analog channel
+/// @param channel Selected channel to read ADC from
+/// @return 8 bit ADC value
 UINT8 analog_read(int channel){
     ADC_Enable(1);
     set_ADC_speed(1);
@@ -149,6 +177,8 @@ UINT8 analog_read(int channel){
     return ADC_DATA;
 }
 
+/// @brief Software Serial on all Port 3
+/// @param  
 void bit_bang_uart_begin(void){
     configure_port(PORT3, PP_OUT);
     set_port_value(PORT3, 0xFF);
@@ -354,15 +384,34 @@ void stop_timer(enum TIMER _t){
 
 // }
 
-/// @brief Function to initialise UART
-/// @param type The UART to be initialised. UART0 or UART1
-void uart_begin(enum UART_TYPE type){
+/// @brief Initialise Uart
+/// @param  type The Uart to be initialised (UART0 or UART1)
+/// @param baudrate Selected baudrate for transmission
+void uart_begin(enum UART_TYPE type, long baudrate){
     //uart_buffer_flush();
+    UINT8 freq = get_system_freq();
+    long mult = 0l; 
+    switch(freq){
+        case 0: mult = 187500;
+                break;
+        case 1: mult = 750000;
+                break;
+        case 2: mult = 3000000;
+                break;
+        case 3: mult = 6000000;
+                break;
+        case 4: mult = 12000000;
+                break;
+        case 5: mult = 16000000;
+                break;
+        case 6: mult = 24000000;
+                break;
+    }
     if(type == UART0){
         T2CON &= 0xCF;
         T2MOD |= 0xA0;
         PCON |= 0x80;
-        TH1 = 236; 
+        TH1 = 256 - mult / 16 / baudrate;
         timer_interrupt(TIMER1,1);
         set_timer_mode(TIMER1,TMR_MODE_2);
         TMOD &= 0xB7;

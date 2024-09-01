@@ -41,7 +41,7 @@
     void select_timer_clk(enum TIMER _t, enum TIMER_CLK _clk);
     void set_timer_mode(enum TIMER _t, enum TIMER_MODE _mode);
     void init_timer(enum TIMER _t);
-    void uart_begin(enum UART_TYPE type);
+    void uart_begin(enum UART_TYPE type, long baudrate);
     void uart_buffer_flush(void);
     UINT8 uart_read(char * buf);
     void uart0_print(char * data);

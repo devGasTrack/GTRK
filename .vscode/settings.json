@@ -3,6 +3,7 @@
         "util.h": "c",
         "*.inc": "c",
         "ch552.h": "c",
-        "sstream": "c"
+        "sstream": "c",
+        "stdlib.h": "c"
     }
 }
