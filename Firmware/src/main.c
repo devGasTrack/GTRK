@@ -26,7 +26,7 @@ void main(void) {
         uart0_println("Fayele Moses Olukoya \t PCB Design");
         uart0_println("JLCPCB \t PCB Manufacture");
         uart0_println("Fayele Joshua Oluwatunmise \t Enclosure Design");
-        uart0_println("DIMENSION FORGE \t Enclosure Manufacture");
+        uart0_println("DIMENSION FORGE \t Enclosure Manufacturer");
         uart0_println("Fayele Moses Olukoya \t Firmware Developer");
 
         delay(500);

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
     UINT8 uart_counter;
+
     __xdata unsigned char uart_buf[256];
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};

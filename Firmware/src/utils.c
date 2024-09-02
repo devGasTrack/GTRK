@@ -383,6 +383,16 @@ void stop_timer(enum TIMER _t){
 // void init_timer(enum TIMER _t){
 
 // }
+/// @brief Clear uart buf
+/// @param 
+void uart_buffer_flush(void){
+    uart_counter = 0;
+    IE &= 0x7F;
+    for(UINT8 i = 0; i <= 255; i++){
+        uart_buf[i] = '\0';
+    }
+    IE |= 0x90;
+}
 
 /// @brief Initialise Uart
 /// @param  type The Uart to be initialised (UART0 or UART1)
@@ -426,16 +436,7 @@ void uart_begin(enum UART_TYPE type, long baudrate){
     
 }
 
-/// @brief Clear uart buf
-/// @param 
-void uart_buffer_flush(void){
-    uart_counter = 0;
-    IE &= 0x7F;
-    for(UINT8 i = 0; i <= 255; i++){
-        uart_buf[i] = '\0';
-    }
-    IE |= 0x80;
-}
+
 /// @brief Read the buffer containing data recieved through UART
 /// @param buf buffer to read the data to. Must not be null
 /// @return number of data read
