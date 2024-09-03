@@ -7,10 +7,10 @@ def generate_dev_settings(SerialNumber,Model):
         with open("../include/DevSettings.h", 'w') as file:
             unique_id = time.strftime('%Y%m%d_%H%M%S', time.gmtime())
             file.write(f"#ifndef _DEV_SETTINGS_{unique_id}\n")
-            file.write(f"#define _DEV_SETTINGS_{unique_id}\n")
+            file.write(f"#define _DEV_SETTINGS_{unique_id}\n\n\n")
             file.write(f'\t#define SERIAL_NUMBER "{SerialNumber}"\n')
             file.write(f'\t#define MODEL "{Model}"\n')
-            file.write(f'\t#define MANUFACTURE_DATE {unique_id}\n')
+            file.write(f'\t#define MANUFACTURE_DATE "{unique_id}"\n\n\n')
             file.write("#endif\n") 
         print(f"Device Settings has been created successfully.")
     except Exception as e:

@@ -1,7 +1,7 @@
 
 #include "../include/utils.h"
 #include <8051.h>
-#include <stdio.h>
+
 
 void timer0_isr(void) __interrupt(INT_NO_TMR1){
 
@@ -20,6 +20,8 @@ void main(void) {
         uart0_println("Fayele Joshua Oluwatunmise \t Enclosure Design");
         uart0_println("DIMENSION FORGE \t Enclosure Manufacturer");
         uart0_println("Fayele Moses Olukoya \t Firmware Developer");
+        who_am_i(data);
+        uart0_println(data);
 
         delay(500);
 

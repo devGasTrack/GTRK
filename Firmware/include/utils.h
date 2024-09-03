@@ -48,5 +48,6 @@
     int uart0_read_bytes(UINT8 * received_bytes,int max_len, UINT8 timeout_ms);
     UINT8 uart0_receive_byte(UINT8 * received_byte, UINT8 timeout_ms);
     int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms, UINT8 condition);
+    void who_am_i(char * details);
     
 #endif
