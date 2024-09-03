@@ -7,14 +7,6 @@ void timer0_isr(void) __interrupt(INT_NO_TMR1){
 
 }
 
-void uart0_isr(void) __interrupt(INT_NO_UART0){
-    if (SCON & 0x01) { 
-        if(uart_counter <= 255)
-            uart_buf[uart_counter++] = SBUF;
-
-        SCON &= 0xFE;
-    }
-}
 
 void main(void) {
     uart_begin(UART0,9600);

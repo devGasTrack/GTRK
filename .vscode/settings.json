@@ -4,6 +4,7 @@
         "*.inc": "c",
         "ch552.h": "c",
         "sstream": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "CH552.H": "cpp"
     }
 }

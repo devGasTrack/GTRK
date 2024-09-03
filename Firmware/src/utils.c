@@ -383,16 +383,7 @@ void stop_timer(enum TIMER _t){
 // void init_timer(enum TIMER _t){
 
 // }
-/// @brief Clear uart buf
-/// @param 
-void uart_buffer_flush(void){
-    uart_counter = 0;
-    IE &= 0x7F;
-    for(UINT8 i = 0; i <= 255; i++){
-        uart_buf[i] = '\0';
-    }
-    IE |= 0x90;
-}
+
 
 /// @brief Initialise Uart
 /// @param  type The Uart to be initialised (UART0 or UART1)
@@ -437,21 +428,6 @@ void uart_begin(enum UART_TYPE type, long baudrate){
 }
 
 
-/// @brief Read the buffer containing data recieved through UART
-/// @param buf buffer to read the data to. Must not be null
-/// @return number of data read
-UINT8 uart_read(char * buf){
-    UINT8 count = 0;
-    uart_counter = 0;
-    for(UINT8 i = 0; i <= 255; i++){
-        if(uart_buf[i] == '\0') break;
-        buf[i] = uart_buf[i];
-        count = i + 1;
-    }
-    uart_buffer_flush();
-    return count;
-}
-
 /// @brief Write a byte using uart0
 /// @param data to be written
 void uart0_write(UINT8 data){
@@ -477,4 +453,64 @@ void uart0_println(char * data){
     uart0_print(data);
     uart0_print('\r');
     uart0_print('\n');
+}
+
+/// @brief Funtion to receive one byte from UART0
+/// @param received_byte Pointer to the received byte
+/// @param timeout_ms Timeout in Milliseconds
+/// @return 0 for success, 1 for timeout
+UINT8 uart0_receive_byte(UINT8 * received_byte, UINT8 timeout_ms){
+    UINT8 ret = 1;
+    for(UINT8 _t  = 0; _t < timeout_ms; _t++){
+        if ((SCON & 0x01)  == 1){
+            *received_byte = SBUF;
+            ret = 0;
+            SCON &= 0xFE;
+            break; 
+        }
+        delay(1);
+    }
+
+    return ret;  
+}
+
+/// @brief Read a maximum of (max_len - 1) from UART0
+/// @param received_bytes Pointer to received data
+/// @param max_len Maximum Data expected from UART0
+/// @param timeout_ms Timeout in Milliseconds
+/// @return 
+int uart0_read_bytes(UINT8 * received_bytes,int max_len, UINT8 timeout_ms){
+    int ret = 0;
+    UINT8 current_recv;
+    while (uart0_receive_byte(&current_recv, timeout_ms) == 0){
+        if(ret == max_len - 1){
+            break;
+        }
+        received_bytes[ret++] = current_recv;
+    }
+
+    return ret;  
+}
+
+/// @brief Function to read a string from UART0 until a specified condition byte is encountered or a timeout occurs.
+/// @param received_bytes Pointer to an array where the received string will be stored.
+/// @param max_len Maximum length of the array to prevent overflow.
+/// @param timeout_ms Timeout in milliseconds for each byte reception.
+/// @param condition Byte value that will stop the reception when encountered.
+/// @return The number of bytes successfully received (not including the null terminator).
+int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms, UINT8 condition){
+    int ret = 0;
+    UINT8 current_recv;
+    do{
+        if(uart0_receive_byte(&current_recv, timeout_ms) != 0)
+            break;
+        
+        if(current_recv == condition){
+            break;
+        }
+        received_bytes[ret++] = current_recv;
+    }while (ret < max_len);
+    
+    received_bytes[ret] = '\0';
+    return ret;
 }

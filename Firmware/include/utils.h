@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-    UINT8 uart_counter;
-
-    __xdata unsigned char uart_buf[256];
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};
     enum TIMER{TIMER0, TIMER1, TIMER2};
@@ -48,5 +45,8 @@
     void uart0_print(char * data);
     void uart0_println(char * data);
     void uart0_write(UINT8 data);
+    int uart0_read_bytes(UINT8 * received_bytes,int max_len, UINT8 timeout_ms);
+    UINT8 uart0_receive_byte(UINT8 * received_byte, UINT8 timeout_ms);
+    int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms, UINT8 condition);
     
 #endif

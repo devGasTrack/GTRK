@@ -1,3 +1,6 @@
-STEP1:  cd build
-STEP 2: chmod +x build.sh
-STEP 3: ./build
+Run the script with 2 params
+First is Serial Number
+Second is Model Number
+Example
+
+./build.sh "1234567890" "ModelX"
