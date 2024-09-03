@@ -20,9 +20,11 @@ void main(void) {
         uart0_println("Fayele Joshua Oluwatunmise \t Enclosure Design");
         uart0_println("DIMENSION FORGE \t Enclosure Manufacturer");
         uart0_println("Fayele Moses Olukoya \t Firmware Developer");
-        who_am_i(data);
+        DeviceSerialNumber(data);
         uart0_println(data);
-
+        DeviceType(data);
+        uart0_println(data);
+        DeviceManufactureDate(data);
         delay(500);
 
 

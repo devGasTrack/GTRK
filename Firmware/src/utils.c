@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "../include/utils.h"
-#include "../include/dev_info.h"
 
 void delay(unsigned int ms) {
     unsigned int i, j;
@@ -515,18 +514,4 @@ int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms
     
     received_bytes[ret] = '\0';
     return ret;
-}
-
-/// @brief Copies Device information into a string
-/// @param details Device details (Minimum of 100 bytes)
-void who_am_i(char * details){
-    if(details != NULL)
-        return;
-    // __xdata unsigned char sn[10] = {0};
-    // __xdata unsigned char model[10] = {0};
-    // __xdata unsigned char manufacture_date[17] = {0};
-    // DeviceSerialNumber(sn);
-    // DeviceType(model);
-    // DeviceManufactureDate(manufacture_date);
-    // sprintf(details,"Model: %s\nSerial Number: %s\nManufacture Date: %s\n",model,sn,manufacture_date );
 }
