@@ -45,9 +45,18 @@ int start_server(char * ip, char * port){
     if(wifi_send_command("AT+CIPMUX=1","OK", 30) != 0){
         return -1;
     }
-    if(wifi_send_command("AT+CIPSERVER=1,80","OK", 30) != 0){
+    memset(command, 0, sizeof(command));
+    sprintf(command, "AT+CIPSERVER=1,%s", port);
+    if(wifi_send_command(command,"OK", 30) != 0){
         return -1;
     }
+    while(echo_find("0,CONNECT",30) != 0){}
+    wifi_send_command("AT+CIPSEND=0,14", ">",30); // not finished
+    /*
+        plan is to load html page into _xdata and sent on the next command
+        The web page is written in html and a python script converts it to *.h file that will be loaded on the next command
+    */
+    wifi_send_command("HELLO GASTRACK","OK",30); // not finished
 }
 
 
@@ -62,10 +71,10 @@ int wifi_init(void){
         return -2;
     }
     
-    if(wifi_flash_peek_ssid() != 0 || wifi_flash_peek_pwd() != 0){
-        wifi_start_hotspot("Gastrack", "123456789");
-        start_server("127.0.0.1", "80");
-    }
+    // if(wifi_flash_peek_ssid() != 0 || wifi_flash_peek_pwd() != 0){
+    //     wifi_start_hotspot("Gastrack", "123456789");
+    //     start_server("192.168.0.1", "80");
+    // }
 
     return 0;
     
