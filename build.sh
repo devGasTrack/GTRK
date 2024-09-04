@@ -25,8 +25,9 @@ mkdir -p "$BUILD_DIR"
 sdcc -mmcs51 -c -I"$INC_DIR" "$SRC_DIR/main.c" -o "$BUILD_DIR/main.rel"
 sdcc -mmcs51 -c -I"$INC_DIR" "$SRC_DIR/utils.c" -o "$BUILD_DIR/utils.rel"
 sdcc -mmcs51 -c -I"$INC_DIR" "$SRC_DIR/dev_info.c" -o "$BUILD_DIR/dev_info.rel"
+sdcc -mmcs51 -c -I"$INC_DIR" "$SRC_DIR/WiFi_Module.c" -o "$BUILD_DIR/WiFi_Module.rel"
 
-sdcc -mmcs51 "$BUILD_DIR/main.rel" "$BUILD_DIR/utils.rel" "$BUILD_DIR/dev_info.rel" -o "$BUILD_DIR/main.ihx"
+sdcc -mmcs51 "$BUILD_DIR/main.rel" "$BUILD_DIR/utils.rel" "$BUILD_DIR/dev_info.rel" "$BUILD_DIR/WiFi_Module.rel" -o "$BUILD_DIR/main.ihx"
 
 packihx "$BUILD_DIR/main.ihx" > "$BUILD_DIR/main.hex"
 srec_cat "$BUILD_DIR/main.hex" -Intel -o "output.bin" -Binary

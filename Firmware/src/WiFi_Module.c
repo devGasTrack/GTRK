@@ -1,6 +1,4 @@
-#include <stdlib.h>
 #include "../include/WiFi_Module.h"
-#include <string.h>
 #include "../include/utils.h"
 
 
@@ -8,9 +6,6 @@ int echo_find(char * keyword, int TIMEOUT){
     UINT8 ch;
     UINT8 current_char = 0;
     UINT8 keyword_length = strlen(keyword);
-
-    if(keyword == NULL)
-        return -1;
 
     for(int i = 0; i < TIMEOUT; i++){
         uart0_receive_byte(&ch,10);
@@ -26,8 +21,6 @@ int echo_find(char * keyword, int TIMEOUT){
 
 
 int wifi_send_command(char * cmd, char * ack, int TIMEOUT){
-    if(cmd == NULL || ack == NULL)
-        return -1;
 
     uart0_println(cmd);
     if (!echo_find(ack, TIMEOUT))
@@ -44,6 +37,11 @@ int wifi_flash_peek_pwd(void){
 }
 
 int start_server(char * ip, char * port){
+    __xdata unsigned char command [100] = {0};
+    sprintf(command, "AT+CIPAP=\"%s\",\"192.168.0.2\",\"255.255.255.0\"", ip);
+    if(wifi_send_command(command,"OK",30) != 0){
+        return -1;
+    }
     if(wifi_send_command("AT+CIPMUX=1","OK", 30) != 0){
         return -1;
     }
@@ -75,7 +73,22 @@ int wifi_init(void){
 
 
 int wifi_start_hotspot(char * ssid, char * pwd){
+    __xdata unsigned char device_name[10] = {0};
+    __xdata unsigned char command[100] = {0};
+
+    DeviceType(device_name);
+
     if(wifi_send_command("AT+CWMODE=2", "OK", 30) != 0){
+        return -1;
+    }
+
+    if(wifi_send_command("AT+CWDHCP=0,1", "OK",30) != 0){
+        return -1;
+    }
+
+    sprintf(command,"AT+CWSAP=\"%s(%s)\",\"%s\",5,3", ssid, device_name, pwd);
+
+    if(wifi_send_command(command, "OK", 30) != 0){
         return -1;
     }
     return 0;

@@ -1,9 +1,9 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 #include "../include/EVT/CH552.H"
-#include <stdlib.h>
-#include <stdbool.h>
+#include <stdio.h>
 #include "../include/dev_info.h"
+#include <string.h>
 
     __xdata unsigned char test[50] = {0};
     

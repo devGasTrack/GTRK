@@ -1,6 +1,5 @@
-#include <stdio.h>
 #include "../include/utils.h"
-#include <string.h>
+
 
 void delay(unsigned int ms) {
     unsigned int i, j;
@@ -463,7 +462,7 @@ void uart0_println(char * data){
 /// @return 0 for success, 1 for timeout
 UINT8 uart0_receive_byte(UINT8 * received_byte, UINT8 timeout_ms){
     UINT8 ret = 1;
-    for(UINT8 _t  = 0; _t < timeout_ms; _t++){
+    for(int _t  = 0; _t < timeout_ms * 1000; _t++){
         if ((SCON & 0x01)  == 1){
             *received_byte = SBUF;
             ret = 0;
