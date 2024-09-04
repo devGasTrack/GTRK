@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "../include/dev_info.h"
 
+    __xdata unsigned char test[50] = {0};
+    
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};
     enum TIMER{TIMER0, TIMER1, TIMER2};

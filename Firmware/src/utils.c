@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "../include/utils.h"
+#include <string.h>
 
 void delay(unsigned int ms) {
     unsigned int i, j;
@@ -451,9 +452,9 @@ void uart0_print(char * data){
 /// @brief Write string via uart and add carriage return and new line at the end
 /// @param data String to be written.
 void uart0_println(char * data){
-    uart0_print(data);
-    uart0_print('\r');
-    uart0_print('\n');
+    __xdata unsigned char t[256] = {0};
+    sprintf(t,"%s\n", data);
+    uart0_print(t);
 }
 
 /// @brief Funtion to receive one byte from UART0

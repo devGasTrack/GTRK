@@ -35,6 +35,23 @@ int wifi_send_command(char * cmd, char * ack, int TIMEOUT){
     return -1;
 }
 
+int wifi_flash_peek_ssid(void){
+    return 0;
+}
+
+int wifi_flash_peek_pwd(void){
+    return 0;
+}
+
+int start_server(char * ip, char * port){
+    if(wifi_send_command("AT+CIPMUX=1","OK", 30) != 0){
+        return -1;
+    }
+    if(wifi_send_command("AT+CIPSERVER=1,80","OK", 30) != 0){
+        return -1;
+    }
+}
+
 
 int wifi_init(void){
     int ret; 
@@ -46,23 +63,38 @@ int wifi_init(void){
     if(wifi_send_command("ATE0", "OK", 30) != 0){
         return -2;
     }
-    //check flash and read last saved settings
-    //if it is empty, setup hotspot
+    
+    if(wifi_flash_peek_ssid() != 0 || wifi_flash_peek_pwd() != 0){
+        wifi_start_hotspot("Gastrack", "123456789");
+        start_server("127.0.0.1", "80");
+    }
 
-    // if(wifi_flash_peek_ssid() != 0 || wifi_flash_peek_pwd() != 0){
-    //     wifi_start_hotspot("Gastrack", "123456789");
-    //     start_server("127.0.0.1", "80");
-    // }
+    return 0;
     
 }
 
 
 int wifi_start_hotspot(char * ssid, char * pwd){
-
+    if(wifi_send_command("AT+CWMODE=2", "OK", 30) != 0){
+        return -1;
+    }
+    return 0;
 }
+
 int wifi_connect(char * ssid, char * pwd){
+    __xdata unsigned char str[50] = {0};
 
+    sprintf(str, "AT+CWJAP= \"%s\",\"%s\"", ssid, pwd);
+
+    if(wifi_send_command("AT+CWMODE=1", "OK", 30) != 0){
+        return -1;
+    }
+    if(wifi_send_command(str,"OK", 30) != 0){
+        return -1;
+    }
+    return 0;
 }
+
 int wifi_http_get(char * url){
 
 }
