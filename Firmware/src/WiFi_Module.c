@@ -1,5 +1,6 @@
 #include "../include/WiFi_Module.h"
-#include "../include/utils.h"
+
+#include <stdarg.h>
 
 
 int echo_find(char * keyword, int TIMEOUT){
@@ -61,7 +62,6 @@ int start_server(char * ip, char * port){
 
 
 int wifi_init(void){
-    int ret; 
     uart_begin(UART0,115200);
     if(wifi_send_command("AT+RST", "ready",30) != 0){
         return -1;
@@ -119,10 +119,43 @@ int wifi_connect(char * ssid, char * pwd){
 
 int wifi_http_get(char * url){
 
-}
-int wifi_http_add_header(char * header, char * value){
+    __xdata unsigned char str[256] = {0};
+    sprintf(str, "AT+HTTPCLIENT=2,0,\"%s\",,,2", url);
+
+    if(wifi_send_command(str,"OK", 30) != 0){
+        return -1;
+    }
+    return 0;
 
 }
-int wifi_http_post(char * url, char * body){
+int wifi_http_add_header(char * mheader, char * header, char * value){
 
+    sprintf(mheader, "%s: %s", header, value);
+    return strlen(mheader);
+}
+
+int wifi_http_post(char * url, char * body, ...){
+    static __xdata unsigned char str[256] = {0};
+    va_list args;
+    char *header;
+    sprintf(str, "AT+HTTPCPOST=\"%s\",%d,2",url,strlen(body));
+
+    va_start(args, body);
+
+    while ((header = va_arg(args, char *)) != NULL) {
+        char new_header[40] = {0};
+        sprintf(new_header, ",\"%s\"", header);
+        strcat(str,new_header);
+    }
+    va_end(args);
+
+    if(wifi_send_command(str,">", 30) != 0){
+        return -1;
+    }
+
+    if(wifi_send_command(body,"OK", 30) != 0){
+        return -1;
+    }
+
+    return 0;
 }

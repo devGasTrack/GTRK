@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include "../include/dev_info.h"
 #include <string.h>
-
-    __xdata unsigned char test[50] = {0};
     
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};
