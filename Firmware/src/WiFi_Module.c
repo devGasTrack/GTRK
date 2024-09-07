@@ -1,6 +1,7 @@
 #include "../include/WiFi_Module.h"
+#include "../include/index_html.h"
 
-#include <stdarg.h>
+ #include <stdarg.h>
 
 
 int echo_find(char * keyword, int TIMEOUT){

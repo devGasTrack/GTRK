@@ -20,12 +20,12 @@ void main(void) {
         ret = wifi_connect("Network112", "Password");
     }while (ret != 0);
 
-    __xdata unsigned char h1[30] = {0};
-    __xdata unsigned char h2[30] = {0};
-    wifi_http_add_header(h1, "connection","keep-alive");
-    wifi_http_add_header(h2,"content-type","application/json");
+    // __xdata unsigned char h1[30] = {0};
+    // __xdata unsigned char h2[30] = {0};
+    // wifi_http_add_header(h1, "connection","keep-alive");
+    // wifi_http_add_header(h2,"content-type","application/json");
     while(1){
-        wifi_http_post("http://httpbin.org/post","body",h1,h2);
+        // wifi_http_post("http://httpbin.org/post",body,h1,h2);
         for(int i = 0; i < 10; i++)
             delay(1000);
     }

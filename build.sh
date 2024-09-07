@@ -15,6 +15,7 @@ cd Firmware
 cd src
 
 python3 Device_Generator.py "$SERIAL_NUMBER" "$MODEL"
+python3 html_converter.py
 
 cd ..
 cd ..
