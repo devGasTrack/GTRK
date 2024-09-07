@@ -12,7 +12,7 @@ if [ -z "$SERIAL_NUMBER" ] || [ -z "$MODEL" ]; then
 fi
 
 cd Firmware
-cd src
+cd scripts
 
 python3 Device_Generator.py "$SERIAL_NUMBER" "$MODEL"
 python3 html_converter.py
