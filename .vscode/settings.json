@@ -5,6 +5,7 @@
         "ch552.h": "c",
         "sstream": "c",
         "stdlib.h": "c",
-        "CH552.H": "cpp"
+        "CH552.H": "cpp",
+        "utils.h": "c"
     }
 }

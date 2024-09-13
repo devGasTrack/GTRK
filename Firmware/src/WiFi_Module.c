@@ -1,5 +1,5 @@
 #include "../include/WiFi_Module.h"
-#include "../include/index_html.h"
+//#include "../include/index_html.h"
 
  #include <stdarg.h>
 
@@ -11,7 +11,6 @@ int echo_find(char * keyword, int TIMEOUT){
 
     for(int i = 0; i < TIMEOUT; i++){
         uart0_receive_byte(&ch,10);
-        uart0_write(ch);
         if(ch == keyword[current_char]){
             if (++current_char == keyword_length){
                 return 0;
@@ -37,7 +36,7 @@ int wifi_flash_peek_ssid(void){
 int wifi_flash_peek_pwd(void){
     return 0;
 }
-
+/*
 int start_server(char * ip, char * port){
     __xdata unsigned char command [100] = {0};
     sprintf(command, "AT+CIPAP=\"%s\",\"192.168.0.2\",\"255.255.255.0\"", ip);
@@ -54,16 +53,16 @@ int start_server(char * ip, char * port){
     }
     while(echo_find("0,CONNECT",30) != 0){}
     wifi_send_command("AT+CIPSEND=0,14", ">",30); // not finished
-    /*
+    
         plan is to load html page into _xdata and sent on the next command
         The web page is written in html and a python script converts it to *.h file that will be loaded on the next command
-    */
+    
     wifi_send_command("HELLO GASTRACK","OK",30); // not finished
 }
-
+*/
 
 int wifi_init(void){
-    uart_begin(UART0,115200);
+    uart_begin(UART0,9600);
     if(wifi_send_command("AT+RST", "ready",30) != 0){
         return -1;
     }
@@ -82,27 +81,27 @@ int wifi_init(void){
 }
 
 
-int wifi_start_hotspot(char * ssid, char * pwd){
-    __xdata unsigned char device_name[10] = {0};
-    __xdata unsigned char command[100] = {0};
+// int wifi_start_hotspot(char * ssid, char * pwd){
+    // __xdata unsigned char device_name[10] = {0};
+    // __xdata unsigned char command[100] = {0};
 
-    DeviceType(device_name);
+    // DeviceType(device_name);
 
-    if(wifi_send_command("AT+CWMODE=2", "OK", 30) != 0){
-        return -1;
-    }
+    // if(wifi_send_command("AT+CWMODE=2", "OK", 30) != 0){
+    //     return -1;
+    // }
 
-    if(wifi_send_command("AT+CWDHCP=0,1", "OK",30) != 0){
-        return -1;
-    }
+    // if(wifi_send_command("AT+CWDHCP=0,1", "OK",30) != 0){
+    //     return -1;
+    // }
 
-    sprintf(command,"AT+CWSAP=\"%s(%s)\",\"%s\",5,3", ssid, device_name, pwd);
+    // sprintf(command,"AT+CWSAP=\"%s(%s)\",\"%s\",5,3", ssid, device_name, pwd);
 
-    if(wifi_send_command(command, "OK", 30) != 0){
-        return -1;
-    }
-    return 0;
-}
+    // if(wifi_send_command(command, "OK", 30) != 0){
+    //     return -1;
+    // }
+    // return 0;
+// }
 
 int wifi_connect(char * ssid, char * pwd){
     __xdata unsigned char str[50] = {0};
@@ -120,7 +119,7 @@ int wifi_connect(char * ssid, char * pwd){
 
 int wifi_http_get(char * url){
 
-    __xdata unsigned char str[256] = {0};
+    __xdata unsigned char str[200] = {0};
     sprintf(str, "AT+HTTPCLIENT=2,0,\"%s\",,,2", url);
 
     if(wifi_send_command(str,"OK", 30) != 0){
@@ -134,7 +133,7 @@ int wifi_http_add_header(char * mheader, char * header, char * value){
     sprintf(mheader, "%s: %s", header, value);
     return strlen(mheader);
 }
-
+/*
 int wifi_http_post(char * url, char * body, ...){
     static __xdata unsigned char str[256] = {0};
     va_list args;
@@ -160,3 +159,4 @@ int wifi_http_post(char * url, char * body, ...){
 
     return 0;
 }
+*/

@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include "../include/dev_info.h"
 #include <string.h>
+
+__xdata unsigned char instruction[50];
+__xdata unsigned char ssid[15];
+__xdata unsigned char pwd[15];
     
     enum PORT{PORT1, PORT2, PORT3};
     enum PORT_MODE {HIGH_IMPEDANCE, PP_OUT, OD_OUT, QUASI_BI};
@@ -49,4 +53,8 @@
     int uart0_read_bytes(UINT8 * received_bytes,int max_len, UINT8 timeout_ms);
     UINT8 uart0_receive_byte(UINT8 * received_byte, UINT8 timeout_ms);
     int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms, UINT8 condition);
+    int search_str(char *base, char *str);
+    UINT8 extract_ssid_from_master(void);
+    UINT8 extract_pwd_from_master(void);
+    UINT8 read_settings_from_master(UINT8 timeout);
 #endif

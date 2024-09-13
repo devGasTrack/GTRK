@@ -1,3 +1,7 @@
+for mac, install homebrew, install python
+brew install usbutils
+python3 -mpip install ch55xtool
+
 Run the script with 2 params
 First is Serial Number
 Second is Model Number

@@ -32,4 +32,5 @@ sdcc -mmcs51 "$BUILD_DIR/main.rel" "$BUILD_DIR/utils.rel" "$BUILD_DIR/dev_info.r
 
 packihx "$BUILD_DIR/main.ihx" > "$BUILD_DIR/main.hex"
 srec_cat "$BUILD_DIR/main.hex" -Intel -o "output.bin" -Binary
+python3 -m ch55xtool -f output.bin
 rm -rf $BUILD_DIR

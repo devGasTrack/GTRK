@@ -515,3 +515,83 @@ int uart0_read_string_until(UINT8 * received_bytes,int max_len, UINT8 timeout_ms
     received_bytes[ret] = '\0';
     return ret;
 }
+
+
+/// @brief Search if str is present in base.
+/// @param base String to search from
+/// @param str String to search
+/// @return return -1 if not present or inxex of str.
+int search_str(char *base, char *str) {
+    if (base == NULL || str == NULL) return -1;
+
+    int base_len = strlen(base);
+    int str_len = strlen(str);
+
+    if (str_len == 0) return -1;
+
+    for (int i = 0; i <= base_len - str_len; i++) {
+        int j = 0;
+        while (j < str_len && base[i + j] == str[j]) {
+            j++;
+        }
+        if (j == str_len) return i;
+    }
+
+    return -1;
+}
+
+
+/// @brief Extract SSID from UART0 input. Please make sure that uart_begin is called and UART0 is enabled. The data reside in pwd
+/// @param 
+/// @return 0 if not extracted. 1 if extraction was successful
+UINT8 extract_ssid_from_master(void){
+  char * data;
+  UINT8 ret = 0;
+      if(uart0_read_string_until(instruction,50,30,'\n') > 2){
+        if(search_str(instruction,"SSID")>= 0){
+          ret = 1;
+          data = strchr(instruction,':');
+          strcpy(ssid,data+1);
+        }
+      }
+      return ret;
+}
+
+/// @brief Extract PWD from UART0 input. Please make sure that uart_begin is called and UART0 is enabled. The data reside in pwd
+/// @param 
+/// @return 0 if not extracted. 1 if extraction was successful
+UINT8 extract_pwd_from_master(void){
+  char * data;
+  UINT8 ret = 0;
+      if(uart0_read_string_until(instruction,50,30,'\n') > 2){
+        if(search_str(instruction,"PWD")>= 0){
+          ret = 1;
+          data = strchr(instruction,':');
+          strcpy(pwd,data+1);
+        }
+      }
+      return ret;
+}
+
+/// @brief Read device settings from master
+/// @param timeout timeout in seconds
+/// @return 0 for success, 1 for failure
+UINT8 read_settings_from_master(UINT8 timeout){
+  UINT8 ret = 0;
+  for(UINT8 t = 0; t < timeout; t++){
+    for(UINT16 i = 0; i < 1000; i++){
+      if(extract_ssid_from_master() > 0 ){
+        ret++;
+      }
+
+      if(extract_pwd_from_master() > 0 ){
+        ret++;
+      }
+      if(ret >= 2) {
+        return 0;
+      }
+      delay(1);
+    }
+  }
+  return 1;
+}
