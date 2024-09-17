@@ -6,6 +6,8 @@
         "sstream": "c",
         "stdlib.h": "c",
         "CH552.H": "cpp",
-        "utils.h": "c"
+        "utils.h": "c",
+        "__locale": "c",
+        "locale": "c"
     }
 }

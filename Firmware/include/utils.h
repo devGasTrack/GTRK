@@ -1,7 +1,6 @@
 #ifndef _UTILS_H
 #define _UTILS_H
 #include "../include/EVT/CH552.H"
-#include <stdio.h>
 #include "../include/dev_info.h"
 #include <string.h>
 
@@ -57,4 +56,7 @@ __xdata unsigned char pwd[15];
     UINT8 extract_ssid_from_master(void);
     UINT8 extract_pwd_from_master(void);
     UINT8 read_settings_from_master(UINT8 timeout);
+    UINT8 convert_to_percentage(UINT8 _number);
+    void convert(char *num, UINT8 _number);
+    UINT8 getURL(char * url, char * latitude, char * longitude, char * level);
 #endif

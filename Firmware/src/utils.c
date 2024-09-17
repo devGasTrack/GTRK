@@ -452,8 +452,10 @@ void uart0_print(char * data){
 /// @param data String to be written.
 void uart0_println(char * data){
     __xdata unsigned char t[256] = {0};
-    sprintf(t,"%s\n", data);
-    uart0_print(t);
+    uart0_print(data);
+    uart0_write('\r');
+    uart0_write('\n');
+
 }
 
 /// @brief Funtion to receive one byte from UART0
@@ -540,7 +542,7 @@ int search_str(char *base, char *str) {
     return -1;
 }
 
-
+/*
 /// @brief Extract SSID from UART0 input. Please make sure that uart_begin is called and UART0 is enabled. The data reside in pwd
 /// @param 
 /// @return 0 if not extracted. 1 if extraction was successful
@@ -594,4 +596,47 @@ UINT8 read_settings_from_master(UINT8 timeout){
     }
   }
   return 1;
+}
+*/
+
+UINT8 convert_to_percentage(UINT8 _number){
+    return (_number * 100) / 255;
+}
+void convert(char *num, UINT8 number) {
+    if (num == NULL) return;
+
+    UINT8 i = 0;
+    char temp[4] = {0};  
+    if (number == 0) {
+        num[i++] = '0';
+        num[i] = '\0';
+        return;
+    }
+
+    while (number > 0) {
+        temp[i++] = (number % 10) + '0';
+        number /= 10;
+    }
+
+    for (UINT8 j = 0; j < i; j++) {
+        num[j] = temp[i - j - 1];
+    }
+    num[i] = '\0';
+}
+
+UINT8 getURL(char * url, char * latitude, char * longitude, char * level){
+  __xdata unsigned char id[15] = {0};
+  DeviceSerialNumber(id);
+  strcpy(url,"GET /api/v1/device_log?device_id=");
+  strcat(url,id);
+  strcat(url,"&latitude=");
+  strcat(url,latitude);
+  strcat(url,"&longitude=");
+  strcat(url,longitude);
+  strcat(url,"&level=");
+  strcat(url,level);
+  strcat(url,".00 HTTP/1.1\n");
+  strcat(url,"Host: gastrackafrica.com.ng\nConnection: close");
+
+  return (UINT8)strlen(url);
 }

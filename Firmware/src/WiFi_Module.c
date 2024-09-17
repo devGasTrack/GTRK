@@ -8,27 +8,18 @@ int echo_find(char * keyword, int TIMEOUT){
     UINT8 ch;
     UINT8 current_char = 0;
     UINT8 keyword_length = strlen(keyword);
-
-    for(int i = 0; i < TIMEOUT; i++){
-        uart0_receive_byte(&ch,10);
-        if(ch == keyword[current_char]){
-            if (++current_char == keyword_length){
-                return 0;
-            }
-        }
-    }
-    return -1;
+    __xdata unsigned char received[255] = {0};
+    uart0_read_string_until(received,200,(UINT8)TIMEOUT, '\0');
+    return search_str(received,keyword);
 } 
 
 
 int wifi_send_command(char * cmd, char * ack, int TIMEOUT){
 
     uart0_println(cmd);
-    if (!echo_find(ack, TIMEOUT))
-        return 0;
-    return -1;
+    return echo_find(ack, TIMEOUT);
 }
-
+/*
 int wifi_flash_peek_ssid(void){
     return 0;
 }
@@ -36,10 +27,9 @@ int wifi_flash_peek_ssid(void){
 int wifi_flash_peek_pwd(void){
     return 0;
 }
-/*
 int start_server(char * ip, char * port){
     __xdata unsigned char command [100] = {0};
-    sprintf(command, "AT+CIPAP=\"%s\",\"192.168.0.2\",\"255.255.255.0\"", ip);
+    //sprintf(command, "AT+CIPAP=\"%s\",\"192.168.0.2\",\"255.255.255.0\"", ip);
     if(wifi_send_command(command,"OK",30) != 0){
         return -1;
     }
@@ -47,7 +37,7 @@ int start_server(char * ip, char * port){
         return -1;
     }
     memset(command, 0, sizeof(command));
-    sprintf(command, "AT+CIPSERVER=1,%s", port);
+    //sprintf(command, "AT+CIPSERVER=1,%s", port);
     if(wifi_send_command(command,"OK", 30) != 0){
         return -1;
     }
@@ -59,18 +49,19 @@ int start_server(char * ip, char * port){
     
     wifi_send_command("HELLO GASTRACK","OK",30); // not finished
 }
-*/
+
 
 int wifi_init(void){
-    uart_begin(UART0,9600);
-    if(wifi_send_command("AT+RST", "ready",30) != 0){
+    if(wifi_send_command("AT+RST", "ready",5) != 0){
         return -1;
     }
 
-    if(wifi_send_command("ATE0", "OK", 30) != 0){
+    if(wifi_send_command("ATE0", "OK", 5) != 0){
         return -2;
     }
-    
+    if(wifi_send_command("AT+CWMODE=1", "OK", 5) != 0){
+        return -2;
+    }
     // if(wifi_flash_peek_ssid() != 0 || wifi_flash_peek_pwd() != 0){
     //     wifi_start_hotspot("Gastrack", "123456789");
     //     start_server("192.168.0.1", "80");
@@ -95,7 +86,7 @@ int wifi_init(void){
     //     return -1;
     // }
 
-    // sprintf(command,"AT+CWSAP=\"%s(%s)\",\"%s\",5,3", ssid, device_name, pwd);
+    // //sprintf(command,"AT+CWSAP=\"%s(%s)\",\"%s\",5,3", ssid, device_name, pwd);
 
     // if(wifi_send_command(command, "OK", 30) != 0){
     //     return -1;
@@ -106,7 +97,7 @@ int wifi_init(void){
 int wifi_connect(char * ssid, char * pwd){
     __xdata unsigned char str[50] = {0};
 
-    sprintf(str, "AT+CWJAP= \"%s\",\"%s\"", ssid, pwd);
+    //sprintf(str, "AT+CWJAP= \"%s\",\"%s\"", ssid, pwd);
 
     if(wifi_send_command("AT+CWMODE=1", "OK", 30) != 0){
         return -1;
@@ -120,7 +111,7 @@ int wifi_connect(char * ssid, char * pwd){
 int wifi_http_get(char * url){
 
     __xdata unsigned char str[200] = {0};
-    sprintf(str, "AT+HTTPCLIENT=2,0,\"%s\",,,2", url);
+    //sprintf(str, "AT+HTTPCLIENT=2,0,\"%s\",,,2", url);
 
     if(wifi_send_command(str,"OK", 30) != 0){
         return -1;
@@ -130,21 +121,21 @@ int wifi_http_get(char * url){
 }
 int wifi_http_add_header(char * mheader, char * header, char * value){
 
-    sprintf(mheader, "%s: %s", header, value);
+    //sprintf(mheader, "%s: %s", header, value);
     return strlen(mheader);
 }
-/*
+
 int wifi_http_post(char * url, char * body, ...){
     static __xdata unsigned char str[256] = {0};
     va_list args;
     char *header;
-    sprintf(str, "AT+HTTPCPOST=\"%s\",%d,2",url,strlen(body));
+    //sprintf(str, "AT+HTTPCPOST=\"%s\",%d,2",url,strlen(body));
 
     va_start(args, body);
 
     while ((header = va_arg(args, char *)) != NULL) {
         char new_header[40] = {0};
-        sprintf(new_header, ",\"%s\"", header);
+        //sprintf(new_header, ",\"%s\"", header);
         strcat(str,new_header);
     }
     va_end(args);
