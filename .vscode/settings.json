@@ -8,6 +8,8 @@
         "CH552.H": "cpp",
         "utils.h": "c",
         "__locale": "c",
-        "locale": "c"
+        "locale": "c",
+        "dev_info.h": "c",
+        "wifi_module.h": "c"
     }
 }

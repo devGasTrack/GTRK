@@ -32,5 +32,8 @@ sdcc -mmcs51 "$BUILD_DIR/main.rel" "$BUILD_DIR/utils.rel" "$BUILD_DIR/dev_info.r
 
 packihx "$BUILD_DIR/main.ihx" > "$BUILD_DIR/main.hex"
 srec_cat "$BUILD_DIR/main.hex" -Intel -o "output.bin" -Binary
+source ~/venv/bin/activate
 python3 -m ch55xtool -f output.bin
+deactivate
+echo "Done"
 rm -rf $BUILD_DIR

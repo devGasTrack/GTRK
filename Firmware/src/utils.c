@@ -170,11 +170,11 @@ void set_ADC_channel(UINT8 channel){
 /// @return 8 bit ADC value
 UINT8 analog_read(int channel){
     ADC_Enable(1);
-    set_ADC_speed(1);
-    set_ADC_channel((UINT8)channel);
-    start_adc();
-    while(is_adc_done() == 1){}
-    ADC_Enable(0);
+      set_ADC_speed(1);
+      set_ADC_channel(3);
+      start_adc();
+      delay(500);
+      // uart0_write(ADC_DATA);
     return ADC_DATA;
 }
 
