@@ -32,8 +32,8 @@ void main(void) {
     strcat(url,";");
     if(wifi_send_command(url,"CONNECT",5) >= 0){
     }
-    for(UINT8 i = 0; i < 60; i++)
-      delay(5000);
+    // for(UINT8 i = 0; i < 60; i++)
+    //   delay(500);
     delay(1000);
       
   }

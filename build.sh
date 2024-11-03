@@ -35,5 +35,8 @@ srec_cat "$BUILD_DIR/main.hex" -Intel -o "output.bin" -Binary
 source ~/venv/bin/activate
 python3 -m ch55xtool -f output.bin
 deactivate
-echo "Done"
 rm -rf $BUILD_DIR
+git add .
+git commit -m "new Build"
+git push
+echo "Done"
