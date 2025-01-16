@@ -1,14 +1,7 @@
 
 #include "../include/WiFi_Module.h"
 #include "../include/dev_info.h"
-// #include <stdio.h>
 #include <8051.h>
-
-
-void timer0_isr(void) __interrupt(INT_NO_TMR1){
-
-}
-
 
 
 void main(void) {
@@ -26,17 +19,9 @@ void main(void) {
     memset(url,0,150);
     convert(level, convert_to_percentage(analog_read(3)));
     DeviceSerialNumber(data);
-    strcat(url,data);
-    strcat(url,":");
-    strcat(url,level);
-    strcat(url,";");
-    if(wifi_send_command(url,"CONNECT",5) >= 0){
-    }
-    // for(UINT8 i = 0; i < 60; i++)
-    //   delay(500);
+    upload_data(level, data);
     delay(1000);
       
   }
     
 }
-

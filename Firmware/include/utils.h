@@ -3,6 +3,7 @@
 #include "../include/EVT/CH552.H"
 #include "../include/dev_info.h"
 #include <string.h>
+#include <stdio.h>
 
 __xdata unsigned char instruction[50];
 __xdata unsigned char ssid[15];
@@ -14,6 +15,7 @@ __xdata unsigned char pwd[15];
     enum UART_TYPE{UART0, UART1};
     enum TIMER_MODE {TMR_MODE_0,TMR_MODE_1,TMR_MODE_2, TMR_MODE_3};
     enum TIMER_CLK {DIV_12, DIV_4, DIV_2, F_SYS};
+
     void set_output_mode(enum PORT port, UINT8 value);
     UINT8 read_output_mode (enum PORT port);
     void set_port_dir(enum PORT port, UINT8 value);
@@ -59,4 +61,5 @@ __xdata unsigned char pwd[15];
     UINT8 convert_to_percentage(UINT8 _number);
     void convert(char *num, UINT8 _number);
     UINT8 getURL(char * url, char * latitude, char * longitude, char * level);
+    int upload_data(char * _level, char * data);
 #endif

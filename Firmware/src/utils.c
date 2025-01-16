@@ -542,7 +542,7 @@ int search_str(char *base, char *str) {
     return -1;
 }
 
-/*
+
 /// @brief Extract SSID from UART0 input. Please make sure that uart_begin is called and UART0 is enabled. The data reside in pwd
 /// @param 
 /// @return 0 if not extracted. 1 if extraction was successful
@@ -597,11 +597,12 @@ UINT8 read_settings_from_master(UINT8 timeout){
   }
   return 1;
 }
-*/
+
 
 UINT8 convert_to_percentage(UINT8 _number){
     return (_number * 100) / 255;
 }
+
 void convert(char *num, UINT8 number) {
     if (num == NULL) return;
 
@@ -624,19 +625,14 @@ void convert(char *num, UINT8 number) {
     num[i] = '\0';
 }
 
-UINT8 getURL(char * url, char * latitude, char * longitude, char * level){
-  __xdata unsigned char id[15] = {0};
-  DeviceSerialNumber(id);
-  strcpy(url,"GET /api/v1/device_log?device_id=");
-  strcat(url,id);
-  strcat(url,"&latitude=");
-  strcat(url,latitude);
-  strcat(url,"&longitude=");
-  strcat(url,longitude);
-  strcat(url,"&level=");
-  strcat(url,level);
-  strcat(url,".00 HTTP/1.1\n");
-  strcat(url,"Host: gastrackafrica.com.ng\nConnection: close");
 
-  return (UINT8)strlen(url);
+
+int upload_data(char * _level, char * data){
+  __xdata unsigned char url[150] = {0};
+  memset(url,0,150);
+  sprintf(url,"%s:%s;",data,_level);
+  if(wifi_send_command(url,"CONNECT",5) >= 0){
+    return 0;
+  }
+  return -1;
 }
